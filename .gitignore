@@ -1,0 +1,6 @@
+*.lic
+sonatype-logs/*
+!sonatype-logs/README.md
+sonatype-work/*
+!sonatype-work/README.md
+.DS_Store

@@ -1,0 +1,37 @@
+version: "3"
+services:
+  nxrm:
+    image: sonatype/nexus3:${NEXUS_VERSION}
+    restart: always
+    stop_grace_period: 2m
+    ports:
+      - "8081:8081"
+    volumes:
+      - ${PWD}/nexus.properties:/nexus-data/etc/nexus.properties
+      - ${PWD}/fabric/:/nexus-data/etc/fabric/
+      - ${PWD}/admin.password:/nexus-data/admin.password
+      - ${PWD}/licenses/:/licenses/
+    depends_on: 
+      - postgresql
+  iq:
+    image: sonatype/nexus-iq-server:${IQ_SERVER_VERSION}
+    restart: always
+    stop_grace_period: 2m
+    ports:
+      - "8070:8070"
+      - "8071:8071"
+    environment:
+      JAVA_OPTS: "-Ddw.licenseFile=/licenses/noadp.lic"
+    volumes:
+      - ${PWD}/sonatype-work:/sonatype-work
+      - ${PWD}/sonatype-logs:/var/log/nexus-iq-server
+      - ${PWD}/fabric/:/nexus-data/etc/fabric/
+      - ${PWD}/admin.password:/nexus-data/admin.password
+      - ${PWD}/licenses/:/licenses/
+  postgresql:
+    image: postgres:latest
+    container_name: postgresql
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
