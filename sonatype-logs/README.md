@@ -1,1 +1,0 @@
-This directory is necessary so  you can mount it to the container. 
